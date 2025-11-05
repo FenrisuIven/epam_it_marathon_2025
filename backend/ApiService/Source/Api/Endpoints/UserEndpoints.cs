@@ -50,6 +50,16 @@ namespace Epam.ItMarathon.ApiService.Api.Endpoints
                 .WithSummary("Auth by UserCode and Read user info by user Id.")
                 .WithDescription("Return user info.");
 
+            _ = root.MapDelete("{id:long}", DeleteUserWithId)
+                .AddEndpointFilterFactory(ValidationFactoryFilter.GetValidationFactory)
+                .Produces<List<UserReadDto>>(StatusCodes.Status200OK)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .ProducesProblem(StatusCodes.Status401Unauthorized)
+                .ProducesProblem(StatusCodes.Status404NotFound)
+                .ProducesProblem(StatusCodes.Status500InternalServerError)
+                .WithSummary("Delete user by id.")
+                .WithDescription("OK if successful.");
+
             _ = root.MapPost("", JoinUserToRoom)
                 .Produces<UserCreationResponse>(StatusCodes.Status201Created)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -64,6 +74,12 @@ namespace Epam.ItMarathon.ApiService.Api.Endpoints
                 .WithDescription("Return created user info.");
 
             return application;
+        }
+
+        public static async Task<IResult> DeleteUserWithId([FromRoute] ulong id, [FromQuery, Required] string? userCode,
+            IMediator mediator, IMapper mapper, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
