@@ -52,7 +52,7 @@ namespace Epam.ItMarathon.ApiService.Api.Endpoints
 
             _ = root.MapDelete("{id:long}", DeleteUserWithId)
                 .AddEndpointFilterFactory(ValidationFactoryFilter.GetValidationFactory)
-                .Produces<List<UserReadDto>>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .ProducesProblem(StatusCodes.Status401Unauthorized)
                 .ProducesProblem(StatusCodes.Status404NotFound)
@@ -77,9 +77,15 @@ namespace Epam.ItMarathon.ApiService.Api.Endpoints
         }
 
         public static async Task<IResult> DeleteUserWithId([FromRoute] ulong id, [FromQuery, Required] string? userCode,
-            IMediator mediator, IMapper mapper, CancellationToken cancellationToken)
+            IMediator mediator, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var result = await mediator.Send(new DeleteUserRequest(userCode!, id), cancellationToken);
+            if (result.IsFailure)
+            {
+                return result.Error.ValidationProblem();
+            }
+
+            return Results.Ok();
         }
 
         /// <summary>
