@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Security.Cryptography.X509Certificates;
+using CSharpFunctionalExtensions;
 using Epam.ItMarathon.ApiService.Application.UseCases.User.Commands;
 using Epam.ItMarathon.ApiService.Domain.Abstract;
 using Epam.ItMarathon.ApiService.Domain.Shared.ValidationErrors;
@@ -22,6 +23,27 @@ namespace Epam.ItMarathon.ApiService.Application.UseCases.User.Handlers
       }
 
       var room = roomResult.Value;
+
+      var userById = room.Users.FirstOrDefault(user => user.Id == request.UserId);
+      if (userById == null)
+      {
+        return Result.Failure<RoomAggregate, ValidationResult>(new BadRequestError([
+          new ValidationFailure(string.Empty, "Users with such code and id are not in the same room.")
+        ]));
+      }
+      if (userById.AuthCode == request.UserCode)
+      {
+        return Result.Failure<RoomAggregate, ValidationResult>(new BadRequestError([
+          new ValidationFailure(string.Empty, "User by code and user by id is the same user.")
+        ]));
+      }
+      if (!userById.IsAdmin)
+      {
+        return Result.Failure<RoomAggregate, ValidationResult>(new ForbiddenError([
+          new ValidationFailure("userById.IsAdmin", "User with this code is not an admin")
+        ]));
+      }
+
       var deleteResult = room.DeleteUser(request.UserId);
       if (deleteResult.IsFailure)
       {
