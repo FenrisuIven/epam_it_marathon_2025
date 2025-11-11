@@ -24,6 +24,21 @@ namespace Epam.ItMarathon.ApiService.Application.UseCases.User.Handlers
 
       var room = roomResult.Value;
 
+      var userByCode = room.Users.FirstOrDefault(user => user.AuthCode == request.UserCode);
+      if (userByCode is null)
+      {
+        return Result.Failure<RoomAggregate, ValidationResult>(new BadRequestError([
+          new ValidationFailure("request.UserCode", "User with this code was not found")
+        ]));
+      }
+      if (!userByCode.IsAdmin)
+      {
+        return Result.Failure<RoomAggregate, ValidationResult>(new ForbiddenError([
+          new ValidationFailure("userById.IsAdmin", "User with this code is not an admin"),
+          new ValidationFailure("user", $"{userByCode.AuthCode}, {userByCode.Id}, ${userByCode.IsAdmin} | ${room.Id}")
+        ]));
+      }
+
       var userById = room.Users.FirstOrDefault(user => user.Id == request.UserId);
       if (userById == null)
       {
@@ -35,12 +50,6 @@ namespace Epam.ItMarathon.ApiService.Application.UseCases.User.Handlers
       {
         return Result.Failure<RoomAggregate, ValidationResult>(new BadRequestError([
           new ValidationFailure(string.Empty, "User by code and user by id is the same user.")
-        ]));
-      }
-      if (!userById.IsAdmin)
-      {
-        return Result.Failure<RoomAggregate, ValidationResult>(new ForbiddenError([
-          new ValidationFailure("userById.IsAdmin", "User with this code is not an admin")
         ]));
       }
 

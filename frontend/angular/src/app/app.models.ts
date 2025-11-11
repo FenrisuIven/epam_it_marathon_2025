@@ -159,6 +159,10 @@ export interface User extends Partial<UserDetails> {
 
 export type JoinRoomResponse = Required<Omit<User, 'giftToUserId'>>;
 
+export interface LeaveRoomResponse {
+  room: RoomSummary;
+}
+
 export interface ModalEntry {
   component: ModalComponentType;
   inputs?: ModalInputs;

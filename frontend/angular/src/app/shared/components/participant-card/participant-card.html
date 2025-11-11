@@ -34,4 +34,12 @@
       (click)="onInfoClick()"
     />
   }
+
+  @if (isCurrentUserAdmin() && !participant().isAdmin) {
+    <app-icon-button
+      [iconName]="iconInfo"
+      [ariaLabel]="ariaLabelRemove"
+      (click)="onRemoveClick()"
+    />
+  }
 </span>

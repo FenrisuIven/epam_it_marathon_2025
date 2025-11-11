@@ -58,6 +58,8 @@ export class ParticipantCard {
   public readonly ariaLabelCopy = AriaLabel.ParticipantLink;
   public readonly iconInfo = IconName.Info;
   public readonly ariaLabelInfo = AriaLabel.Info;
+  public readonly iconRemove = IconName.Remove;
+  public readonly ariaLabelRemove = AriaLabel.Remove;
 
   @HostBinding('tabindex') tab = 0;
   @HostBinding('class.list-row') rowClass = true;
@@ -102,6 +104,46 @@ export class ParticipantCard {
     }
 
     this.#showPopup();
+  }
+
+  public onRemoveClick(): void {
+    if (this.isCurrentUserAdmin()) {
+      const targetUserCode = this.userCode();
+      if (!targetUserCode) return;
+
+      const host = this.#host.nativeElement;
+
+      const currentUserCode = this.participant().userCode;
+      this.#userService
+        .getUsers()
+        .pipe(
+          tap((users) => {
+            const currentUser = users.body?.find(
+              (user) => user.userCode === currentUserCode
+            );
+
+            if (!currentUser) {
+              this.#popup.show(host, PopupPosition.Right, {
+                message: 'There was an error getting current user',
+                type: MessageType.Error,
+              });
+              return;
+            }
+            if (currentUser.userCode === targetUserCode) {
+              this.#popup.show(host, PopupPosition.Right, {
+                message: 'User cannot remove themselves from the room',
+                type: MessageType.Error,
+              });
+              return;
+            }
+
+            this.#userService
+              .removeUser(currentUser.id, targetUserCode)
+              .subscribe();
+          })
+        )
+        .subscribe();
+    }
   }
 
   public onCopyHover(target: EventTarget | null): void {

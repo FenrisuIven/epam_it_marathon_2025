@@ -6,7 +6,7 @@ import { ApiService } from '../../core/services/api';
 import { RoomService } from './room';
 import { ToastService } from '../../core/services/toast';
 import { MessageType, ToastMessage } from '../../app.enum';
-import type { User } from '../../app.models';
+import type { LeaveRoomResponse, User } from '../../app.models';
 
 @Injectable({
   providedIn: 'root',
@@ -54,6 +54,30 @@ export class UserService {
             MessageType.Success
           );
         }
+      })
+    );
+  }
+
+  public removeUser(
+    id: number,
+    userCode: string
+  ): Observable<HttpResponse<string>> {
+    console.log({ id, userCode });
+    return this.#apiService.removeUserFromRoom(id, userCode).pipe(
+      tap((data) => {
+        console.log({ data });
+        const { status } = data;
+        if (status === 201) {
+          this.#roomService.getRoomByUserCode(this.#userCode());
+          this.#toasterService.show(
+            ToastMessage.DefaultMessage,
+            MessageType.Success
+          );
+        }
+        this.#toasterService.show(
+          ToastMessage.SomethingWentWrong,
+          MessageType.Success
+        );
       })
     );
   }

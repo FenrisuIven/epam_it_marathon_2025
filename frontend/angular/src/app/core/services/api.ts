@@ -11,6 +11,7 @@ import {
   RoomDetails,
   User,
   JoinRoomResponse,
+  LeaveRoomResponse,
   RoomUpdateRequest,
 } from '../../app.models';
 
@@ -48,11 +49,43 @@ export class ApiService {
   ): Observable<HttpResponse<JoinRoomResponse>> {
     const params = new HttpParams().set('roomCode', roomCode);
 
-    return this.#http.post<JoinRoomResponse>(
+    const res = this.#http.post<JoinRoomResponse>(
       `${this.#baseUrl}${Endpoint.users}`,
       userData,
       { params, observe: 'response' }
     );
+
+    console.log({ res });
+
+    return res;
+  }
+
+  public removeUserFromRoom(
+    id: number,
+    userCode: string
+  ): Observable<HttpResponse<string>> {
+    const params = new HttpParams().set('userCode', userCode);
+
+    const res = this.#http.delete<string>(
+      `${this.#baseUrl}${Endpoint.users}/${id}`,
+      {
+        params,
+        observe: 'response',
+      }
+    );
+
+    console.log({
+      res,
+      query: {
+        url: `${this.#baseUrl}${Endpoint.users}/${id}`,
+        params: {
+          params,
+          observe: 'response',
+        },
+      },
+    });
+
+    return res;
   }
 
   public getRoomByUserCode(
