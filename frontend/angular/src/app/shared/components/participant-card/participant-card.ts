@@ -123,17 +123,9 @@ export class ParticipantCard {
             );
 
             if (!currentUser) {
-              this.#popup.show(host, PopupPosition.Right, {
-                message: 'There was an error getting current user',
-                type: MessageType.Error,
-              });
               return;
             }
             if (currentUser.userCode === targetUserCode) {
-              this.#popup.show(host, PopupPosition.Right, {
-                message: 'User cannot remove themselves from the room',
-                type: MessageType.Error,
-              });
               return;
             }
 

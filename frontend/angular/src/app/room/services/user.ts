@@ -1,12 +1,12 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpResponseBase } from '@angular/common/http';
 
 import { ApiService } from '../../core/services/api';
 import { RoomService } from './room';
 import { ToastService } from '../../core/services/toast';
 import { MessageType, ToastMessage } from '../../app.enum';
-import type { LeaveRoomResponse, User } from '../../app.models';
+import type { User } from '../../app.models';
 
 @Injectable({
   providedIn: 'root',
@@ -62,22 +62,15 @@ export class UserService {
     id: number,
     userCode: string
   ): Observable<HttpResponse<string>> {
-    console.log({ id, userCode });
     return this.#apiService.removeUserFromRoom(id, userCode).pipe(
-      tap((data) => {
-        console.log({ data });
-        const { status } = data;
-        if (status === 201) {
+      tap(({ status }) => {
+        if (status === 200) {
           this.#roomService.getRoomByUserCode(this.#userCode());
           this.#toasterService.show(
-            ToastMessage.DefaultMessage,
+            ToastMessage.UserRemoved,
             MessageType.Success
           );
         }
-        this.#toasterService.show(
-          ToastMessage.SomethingWentWrong,
-          MessageType.Success
-        );
       })
     );
   }

@@ -1,4 +1,9 @@
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpParams,
+  HttpResponse,
+  HttpResponseBase,
+} from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -66,26 +71,13 @@ export class ApiService {
   ): Observable<HttpResponse<string>> {
     const params = new HttpParams().set('userCode', userCode);
 
-    const res = this.#http.delete<string>(
+    return this.#http.delete<string>(
       `${this.#baseUrl}${Endpoint.users}/${id}`,
       {
         params,
         observe: 'response',
       }
     );
-
-    console.log({
-      res,
-      query: {
-        url: `${this.#baseUrl}${Endpoint.users}/${id}`,
-        params: {
-          params,
-          observe: 'response',
-        },
-      },
-    });
-
-    return res;
   }
 
   public getRoomByUserCode(
