@@ -75,3 +75,10 @@ db_engine            = "postgres"
 db_engine_version    = "17.5"
 db_instance_class    = "db.t3.micro"
 db_subnet_group_name = "rds-private-subnet-group"
+
+################################################################################
+# SSL variables
+################################################################################
+
+domain_name = "fenvis.pp.ua"
+certificate_arn = "arn:aws:acm:eu-central-1:297486149860:certificate/ed86fab1-f2df-4d26-873f-de060b4f4c22"
