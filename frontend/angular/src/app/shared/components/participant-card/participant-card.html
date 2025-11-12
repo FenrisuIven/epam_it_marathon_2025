@@ -37,7 +37,7 @@
 
   @if (isCurrentUserAdmin() && !participant().isAdmin) {
     <app-icon-button
-      [iconName]="iconInfo"
+      [iconName]="iconRemove"
       [ariaLabel]="ariaLabelRemove"
       (click)="onRemoveClick()"
     />
