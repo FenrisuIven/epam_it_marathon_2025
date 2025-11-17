@@ -107,14 +107,14 @@ export class ParticipantCard {
     this.#showPopup();
   }
 
-  private removeUser(targetUserCode: string) {
+  private removeUser(targetUserCode: string, callback?: () => void): void {
     const host = this.#host.nativeElement;
 
     const currentUserCode = this.participant().userCode;
     this.#userService
       .getUsers()
       .pipe(
-        tap((users) => {
+        tap(async (users) => {
           const currentUser = users.body?.find(
             (user) => user.userCode === currentUserCode
           );
@@ -128,7 +128,11 @@ export class ParticipantCard {
 
           this.#userService
             .removeUser(currentUser.id, targetUserCode)
-            .subscribe();
+            .subscribe(() => {
+              if (callback) {
+                callback();
+              }
+            });
         })
       )
       .subscribe();
@@ -146,9 +150,7 @@ export class ParticipantCard {
             const targetUserCode = this.userCode();
             if (!targetUserCode) return;
 
-            this.removeUser(targetUserCode);
-
-            this.#modalService.close();
+            this.removeUser(targetUserCode, () => this.#modalService.close());
           },
           closeModal: () => this.#modalService.close(),
         }
