@@ -15,11 +15,11 @@ export class RemoveParticipantModal {
   readonly closeModal = output<void>();
   readonly buttonAction = output<void>();
 
-  public readonly pictureName = PictureName.Star;
+  public readonly pictureName = PictureName.Car;
   public readonly title = ModalTitle.RemoveParticipant;
   public readonly buttonText = ButtonText.Remove;
   public readonly cancelButtonText = ButtonText.Cancel;
-  public readonly subtitle = /*ModalSubtitle.ParticipantInfo*/ '';
+  public readonly subtitle = '';
 
   public readonly buttonType = 'warning';
   public readonly cancelButtonType = 'secondary';

@@ -145,8 +145,9 @@ export class ParticipantCard {
           buttonAction: () => {
             const targetUserCode = this.userCode();
             if (!targetUserCode) return;
-            // this.removeUser(targetUserCode);
-            console.log(`Removing user with code: ${targetUserCode}`);
+
+            this.removeUser(targetUserCode);
+
             this.#modalService.close();
           },
           closeModal: () => this.#modalService.close(),
