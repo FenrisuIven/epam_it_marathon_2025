@@ -1,0 +1,24 @@
+<app-common-modal-template
+  [headerPictureName]="pictureName"
+  [headerTitle]="title"
+  [cancelButtonText]="cancelButtonText"
+  [cancelButtonType]="cancelButtonType"
+  [buttonText]="buttonText"
+  [buttonType]="buttonType"
+  [subtitle]="subtitle"
+  (cancelButtonAction)="onCloseModal()"
+  (buttonAction)="onActionButtonClick()"
+  (closeModal)="onCloseModal()"
+>
+  <div class="modal__content">
+    <section class="modal__content-item">
+      <div class="modal__text-wrapper">
+        <span class="modal__text">
+          Are you sure you want to remove
+          <strong>{{ participantFullName() }}</strong>
+          from the room?
+        </span>
+      </div>
+    </section>
+  </div>
+</app-common-modal-template>

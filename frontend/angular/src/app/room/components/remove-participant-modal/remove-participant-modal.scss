@@ -1,0 +1,42 @@
+@use 'abstracts/variables' as *;
+@use 'colors/color-matrix' as *;
+@use 'abstracts/mixins' as *;
+
+:host ::ng-deep .modal {
+  width: 480px !important;
+
+  &__picture path {
+    outline: solid;
+  }
+
+  &__header {
+    padding: 8px 16px 4px 16px !important ;
+    background-color: cm(warning, default, bg);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__title {
+    margin: 0 !important ;
+    color: white !important ;
+  }
+
+  &__text-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__text {
+    text-align: justify;
+  }
+
+  &__button-close {
+    position: relative !important;
+    top: 0 !important;
+    right: 0 !important;
+    svg {
+      fill: white !important;
+    }
+  }
+}

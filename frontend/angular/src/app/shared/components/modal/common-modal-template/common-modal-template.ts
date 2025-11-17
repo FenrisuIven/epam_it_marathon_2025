@@ -20,6 +20,9 @@ export class CommonModalTemplate extends ParentModalLayout {
   readonly cancelButtonText = input<ButtonText>();
   readonly budget = input<number>();
 
+  readonly buttonType = input<string>('primary');
+  readonly cancelButtonType = input<string>('secondary');
+
   readonly cancelButtonAction = output<void>();
 
   readonly isBudgetShown = computed(() => this.budget() !== undefined);

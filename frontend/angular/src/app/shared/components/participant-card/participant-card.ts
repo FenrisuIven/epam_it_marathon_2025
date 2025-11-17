@@ -25,6 +25,7 @@ import { ModalService } from '../../../core/services/modal';
 import { getPersonalInfo } from '../../../utils/get-personal-info';
 import { UserService } from '../../../room/services/user';
 import type { User } from '../../../app.models';
+import { RemoveParticipantModal } from '../../../room/components/remove-participant-modal/remove-participant-modal';
 
 @Component({
   selector: 'li[app-participant-card]',
@@ -106,35 +107,51 @@ export class ParticipantCard {
     this.#showPopup();
   }
 
+  private removeUser(targetUserCode: string) {
+    const host = this.#host.nativeElement;
+
+    const currentUserCode = this.participant().userCode;
+    this.#userService
+      .getUsers()
+      .pipe(
+        tap((users) => {
+          const currentUser = users.body?.find(
+            (user) => user.userCode === currentUserCode
+          );
+
+          if (!currentUser) {
+            return;
+          }
+          if (currentUser.userCode === targetUserCode) {
+            return;
+          }
+
+          this.#userService
+            .removeUser(currentUser.id, targetUserCode)
+            .subscribe();
+        })
+      )
+      .subscribe();
+  }
+
   public onRemoveClick(): void {
     if (this.isCurrentUserAdmin()) {
-      const targetUserCode = this.userCode();
-      if (!targetUserCode) return;
-
-      const host = this.#host.nativeElement;
-
-      const currentUserCode = this.participant().userCode;
-      this.#userService
-        .getUsers()
-        .pipe(
-          tap((users) => {
-            const currentUser = users.body?.find(
-              (user) => user.userCode === currentUserCode
-            );
-
-            if (!currentUser) {
-              return;
-            }
-            if (currentUser.userCode === targetUserCode) {
-              return;
-            }
-
-            this.#userService
-              .removeUser(currentUser.id, targetUserCode)
-              .subscribe();
-          })
-        )
-        .subscribe();
+      this.#modalService.openWithResult(
+        RemoveParticipantModal,
+        {
+          participantFullName: this.fullName(),
+        },
+        {
+          buttonAction: () => {
+            const targetUserCode = this.userCode();
+            if (!targetUserCode) return;
+            // this.removeUser(targetUserCode);
+            console.log(`Removing user with code: ${targetUserCode}`);
+            this.#modalService.close();
+          },
+          closeModal: () => this.#modalService.close(),
+        }
+      );
     }
   }
 

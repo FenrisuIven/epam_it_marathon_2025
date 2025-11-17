@@ -41,14 +41,14 @@
         <div class="modal__actions">
           @if (cancelButtonText(); as text) {
             <app-button
-              class="secondary medium"
+              class="{{ cancelButtonType() }} medium"
               [text]="text"
               (click)="onCancelButtonClick()"
             />
           }
 
           <app-button
-            class="primary medium"
+            class="{{ buttonType() }} medium"
             [text]="buttonText()"
             (click)="onActionButtonClick()"
           />
